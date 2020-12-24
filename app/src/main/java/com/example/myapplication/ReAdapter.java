@@ -97,6 +97,8 @@ public class ReAdapter extends RecyclerView.Adapter<ReAdapter.RecViewHolder> {
                     notifyItemChanged(i);
                 }
                 i++;
+
+
             }
         });
         holder.button.setOnClickListener(v ->{
