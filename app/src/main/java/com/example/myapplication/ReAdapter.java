@@ -15,10 +15,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
@@ -70,7 +73,7 @@ public class ReAdapter extends RecyclerView.Adapter<ReAdapter.RecViewHolder> {
         }
 
             holder.itemView.setOnClickListener(v -> {
-            boolean expanded = movie.second.isExpanded();
+                boolean expanded = movie.second.isExpanded();
             movie.second.setExpanded(!expanded);
             notifyItemChanged(position);
             if(position>0)
@@ -150,7 +153,7 @@ public class ReAdapter extends RecyclerView.Adapter<ReAdapter.RecViewHolder> {
 
         private TextView title;
         private TextView genre;
-        private View subItem,view, viewfirst;
+        private View subItem, viewfirst;
         private Button button;
         private ImageView uncheck, tickCross;
         private CheckView checkView;
@@ -163,15 +166,21 @@ public class ReAdapter extends RecyclerView.Adapter<ReAdapter.RecViewHolder> {
             button = itemView.findViewById(R.id.conti);
             checkView = itemView.findViewById(R.id.check);
             uncheck = itemView.findViewById(R.id.notcheck);
-            view = itemView.findViewById(R.id.item_divider);
             viewfirst = itemView.findViewById(R.id.viewfirst);
             tickCross = itemView.findViewById(R.id.tick);
         }
 
         private void bind(Movie movie) {
             boolean expanded = movie.isExpanded();
-            subItem.setVisibility(expanded ? View.VISIBLE : View.GONE);
-            view.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            Animation slide_down = AnimationUtils.loadAnimation(context,
+                    R.anim.slide_down);
+
+            Animation slide_up = AnimationUtils.loadAnimation(context,
+                    R.anim.slide_up);
+
+            subItem.startAnimation(expanded ? slide_down:slide_up);
+            subItem.setVisibility(expanded ?View.VISIBLE : View.GONE);
+
             title.setText(movie.getTitle());
             genre.setText("Info: " + movie.getGenre());
         }
@@ -193,8 +202,6 @@ public void checkpermission(String perm, int requestcode) {
     } else {
         // Permission has already been granted
     }
-
-
 }
 
 public void buttonclick()
@@ -202,6 +209,8 @@ public void buttonclick()
      mo.second.setExpanded(false);
     notifyItemChanged(pos);
     AnimatedVectorDrawable drawable;
+
+
 
     drawable = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, R.drawable.animated_check);
     hol.tickCross.setImageDrawable(drawable);
